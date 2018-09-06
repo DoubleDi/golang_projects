@@ -1,0 +1,13 @@
+Во время тестов были найдены следующие баги:
+-   if len(data) > req.Limit {
++   if len(data) == req.Limit {
+
+-       if req.Limit > 25 {
++       if req.Limit > 25 || req.Limit == 0 {
+
+-       result.Users = data[0:len(data)]
++    if len(data) > 0 && len(data) == req.Limit {
++        result.Users = data[0:len(data) - 1]
++    } else {
++        result.Users = data
++    }
