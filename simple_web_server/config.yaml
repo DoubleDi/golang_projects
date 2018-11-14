@@ -1,0 +1,5 @@
+DBUser: root
+DBPass: 
+DBHost: localhost
+DBPort: 3306
+DBName: mailru_test
