@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"test-task/db"
 	"testing"
 
 	"./api"
@@ -22,7 +23,7 @@ import (
 
 type Case struct {
 	Number int
-	Method string // GET по-умолчанию в http.NewRequest если передали пустую строку
+	Method string
 	Path   string
 	Query  string
 	Status int
@@ -417,10 +418,9 @@ func TestApis(t *testing.T) {
 
 	for _, item := range cases {
 		var (
-			err      error
-			result   interface{}
-			expected interface{}
-			req      *http.Request
+			err    error
+			result map[string][]user.UsersByDate
+			req    *http.Request
 		)
 
 		caseName := fmt.Sprintf("case %v: [%s] %s %s", item.Number, item.Method, item.Path, item.Query)
@@ -460,19 +460,12 @@ func TestApis(t *testing.T) {
 				t.Errorf("[%s] cant unpack json: %v", caseName, err)
 				continue
 			}
+
+			if !reflect.DeepEqual(result, item.Result) {
+				t.Errorf("[%d] results not match\nGot : %#v\nWant: %#v", item.Number, result, item.Result)
+				continue
+			}
 		}
 
-		// reflect.DeepEqual не работает если нам приходят разные типы
-		// а там приходят разные типы (string VS interface{}) по сравнению с тем что в ожидаемом результате
-		// этот маленький грязный хак конвертит данные сначала в json, а потом обратно в interface - получаем совместимые результаты
-		// не используйте это в продакшен-коде - надо явно писать что ожидается интерфейс или использовать другой подход с точным форматом ответа
-		data, err := json.Marshal(item.Result)
-		json.Unmarshal(data, &expected)
-
-		if !reflect.DeepEqual(result, expected) {
-			t.Errorf("[%d] results not match\nGot : %#v\nWant: %#v", item.Number, result, expected)
-			continue
-		}
 	}
-
 }
