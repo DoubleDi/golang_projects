@@ -28,12 +28,12 @@ func (db *DB) TopUsers(date1 time.Time, date2 time.Time, action string, limit in
 	rows, err := db.Query(`
 		select id, age, sex, date(ts) as date, count(*) as count from 
 			(select id, age, sex from users join stats on (users.id=stats.user_id) 
-			 where action = ? 
+			 where action = ? and date(stats.ts) >= ? and date(stats.ts) <= ?
 			 group by stats.user_id order by count(*) desc limit ?) as top_users 
 		join stats on (top_users.id=stats.user_id)
-		where date(stats.ts) >= ? and date(stats.ts) <= ?
+		where action = ? and date(stats.ts) >= ? and date(stats.ts) <= ?
 		group by id, date(ts) order by date(ts) desc
-	`, action, limit, date1, date2)
+	`, action, date1, date2, limit, action, date1, date2)
 	defer rows.Close()
 
 	topUsers := make([]user.UsersByDate, 0, limit)
