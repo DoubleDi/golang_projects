@@ -38,6 +38,6 @@ run:
 
 .PHONY: migrate
 migrate: tools
-	migrate file://deployments/migrations -database postgres://${TX_DB_USER}:${TX_DB_PASSWORD}@127.0.0.1:${TX_DB_PORT}/${TX_DB_NAME}?sslmode=disable up
+	migrate -source file://deployments/migrations -database postgres://${TX_DB_USER}:${TX_DB_PASSWORD}@127.0.0.1:${TX_DB_PORT}/${TX_DB_NAME}?sslmode=disable up
 	
 	
