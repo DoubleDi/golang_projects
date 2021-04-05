@@ -1,4 +1,4 @@
-module github.com/golang_projects/slots
+module github.com/DoubleDi/golang_projects/slots
 
 go 1.16
 
