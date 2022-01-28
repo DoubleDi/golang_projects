@@ -72,13 +72,13 @@ func (h *BalanceHandler) GetBalances(w http.ResponseWriter, r *http.Request) {
 	if toStr != "" {
 		to, err = time.Parse(time.RFC3339, toStr)
 		if err != nil {
-			http.Error(w, "invalid endDateTime value", http.StatusBadRequest)
+			http.Error(w, "invalid endDatetime value", http.StatusBadRequest)
 			return
 		}
 	}
 
 	if from.After(to) {
-		http.Error(w, "startDatetime after endDateTime", http.StatusBadRequest)
+		http.Error(w, "startDatetime after endDatetime", http.StatusBadRequest)
 		return
 	}
 	from = toStartOfHour(from)

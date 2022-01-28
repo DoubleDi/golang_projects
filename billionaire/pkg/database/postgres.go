@@ -99,7 +99,7 @@ func (r *WalletHistoryPostgresRepository) GetBalances(ctx context.Context, from,
 		return nil, err
 	}
 
-	balances := make([]Balance, 0, len(currentBalances)+1)
+	var balance Balance
 	query, args, err = r.db.BindNamed(
 		"SELECT datetime, amount FROM wallet_hour_history WHERE datetime < :from ORDER BY datetime DESC LIMIT 1",
 		map[string]interface{}{"from": from},
@@ -108,21 +108,16 @@ func (r *WalletHistoryPostgresRepository) GetBalances(ctx context.Context, from,
 		return nil, err
 	}
 
-	err = r.db.SelectContext(
+	err = r.db.GetContext(
 		ctx,
-		&balances,
+		&balance,
 		query,
 		args...,
 	)
-	if err != nil {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
-	balances = append(balances, currentBalances...)
-
-	if len(balances) == 0 {
-		balances = append(balances, Balance{})
-	}
-
+	balances := append([]Balance{balance}, currentBalances...)
 	return r.fillBalances(balances, from, to), nil
 }
 

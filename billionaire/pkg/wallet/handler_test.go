@@ -88,19 +88,19 @@ func (s *BalanceHandlerSuite) TestGetBalances() {
 			name:         "from before to",
 			request:      httptest.NewRequest(http.MethodGet, "/billionaire?startDatetime=2022-01-28T14:10:00%2B03:00&endDatetime=2022-01-27T14:10:00%2B00:00", nil),
 			expectedCode: http.StatusBadRequest,
-			result:       "from after to\n",
+			result:       "startDatetime after endDatetime\n",
 		},
 		{
 			name:         "invalid from",
 			request:      httptest.NewRequest(http.MethodGet, "/billionaire?startDatetime=2022-01-2", nil),
 			expectedCode: http.StatusBadRequest,
-			result:       "invalid from value\n",
+			result:       "invalid startDatetime value\n",
 		},
 		{
 			name:         "invalid to",
 			request:      httptest.NewRequest(http.MethodGet, "/billionaire?endDatetime=2022-01-2", nil),
 			expectedCode: http.StatusBadRequest,
-			result:       "invalid to value\n",
+			result:       "invalid endDatetime value\n",
 		},
 		{
 			name:         "ok",
