@@ -1,0 +1,29 @@
+version: "3.5"
+services:
+  web:
+    build:
+      context: ../.
+      dockerfile: build/Dockerfile
+    image: billionaire_web
+    container_name: billionaire_web
+    ports:
+      - "${TX_HTTP_PORT}:${TX_HTTP_PORT}"
+    env_file:
+      - ../configs/app.env
+    restart: on-failure
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10
+    container_name: billionaire_db
+    ports:
+      - ${TX_DB_PORT}:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: on-failure
+    env_file:
+      - ../configs/postgres.env
+
+volumes:
+  postgres_data: {}
